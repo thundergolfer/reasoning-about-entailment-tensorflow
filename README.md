@@ -1,4 +1,4 @@
-# Implementation: *Reasoning About Entailment With Neural Attention*
+# Implementation: *Reasoning About Entailment With Neural Attention* [![Build Status](https://travis-ci.com/thundergolfer/reasoning-about-entailment-tensorflow.svg?token=yHGWQ42iK2BPk1FjaUMc&branch=master)](https://travis-ci.com/thundergolfer/reasoning-about-entailment-tensorflow)
 
 ----
 
