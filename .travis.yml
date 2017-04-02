@@ -1,0 +1,15 @@
+language: python
+sudo: required
+dist: trusty
+python: "2.7"
+env:
+  - TEST_SUITE=test
+branches:
+  only: [master]
+install:
+  - export MINICONDA_DIRECTORY=${HOME}/miniconda
+  - ./install_miniconda.sh
+  - ./install.sh
+  - ./run_in_environment.sh pip install --upgrade tensorflow
+script:
+  - ./run_in_environment.sh python -m pytest tests/

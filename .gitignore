@@ -1,3 +1,10 @@
+# SNLI Dataset files
+snli_1.0
+*.zip
+
+# Ignore Any Wheel files
+*.whl
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -81,6 +88,7 @@ celerybeat-schedule
 # virtualenv
 venv/
 ENV/
+virtual_env/
 
 # Spyder project settings
 .spyderproject
