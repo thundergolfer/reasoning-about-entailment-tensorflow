@@ -28,6 +28,21 @@ entailment dataset.
 
 `coming soon`
 
+## Installation 
+
+First clone this repository with `git clone git@github.com:thundergolfer/reasoning-about-entailment-tensorflow.git` **OR** you can also [fork](https://github.com/thundergolfer/reasoning-about-entailment-tensorflow#fork-destination-box) the repository.
+
+Once cloned, install [Miniconda](https://conda.io/miniconda.html) with `./install_miniconda.sh`. That should succeed outputting `Install complete <INSTALL LOCATION>` in the terminal. 
+
+Now the Miniconda has been installed you can install all packages into a nice `conda` virtual environment with `./install.sh`. *[Currently this doesn't support Windows, sorry]*
+
+If everything in the install script went OK, you can enter the created virtual environment with `source ./run_in_environment.sh`. 
+
+#### Remaining Parts For Install
+
+* Download the SNLI Dataset ([info](https://nlp.stanford.edu/projects/snli/)): `./scripts/get_snli_dataset.sh`
+* Download the pre-trained Word2Vec model ([info](https://en.wikipedia.org/wiki/Word2vec)): `./scripts/get_word2vec.sh`
+
 ## Usage
 
 `coming soon`
