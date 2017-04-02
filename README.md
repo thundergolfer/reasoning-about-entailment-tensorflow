@@ -60,6 +60,17 @@ If everything in the install script went OK, you can enter the created virtual e
 
 Jonathon Belotti ([thundergolfer](https://github.com/thundergolfer)) - [@jonobelotti_IO](https://twitter.com/jonobelotti_IO) - [jonathonbelotti.com](http://jonathonbelotti.com)
 
+### References
+
+
+1. **Tim Rocktäschel, Edward Grefenstette, Karl Moritz Hermann, Tomáš Kočiský, Phil Blunsom**, *[Reasoning about Entailment with Neural Attention](https://arxiv.org/abs/1509.06664)*, 2015.
+
+2. **Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg Corrado, Jeffrey Dean**, *[Distributed Representations of Words and Phrases and their Compositionality](https://arxiv.org/abs/1310.4546)*, 2013.
+
+3. **Google**, *[Large-Scale Machine Learning on Heterogeneous Systems](http://tensorflow.org/)*, 2015.
+
+4. **Samuel R. Bowman, Gabor Angeli, Christopher Potts, Christopher D. Manning, The Stanford Natural Language Processing Group**, *[A large annotated corpus for learning natural language inference](http://nlp.stanford.edu/projects/snli/)*,  2015.
+
 ### License
 
 This project is available under the [MIT License](https://choosealicense.com/licenses/mit/)
