@@ -46,7 +46,6 @@ done
 pip install --no-deps ./$CURRTF
 SCRIPT_PATH=`readlink -f "$0"`
 SCRIPT_DIR=`dirname "$SCRIPT_PATH"`
-pip install -e "$SCRIPT_DIR"
 
 rm $CURRTF
 
