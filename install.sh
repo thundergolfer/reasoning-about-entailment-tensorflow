@@ -58,7 +58,7 @@ source run_in_environment.sh
 
 echo Installing pip requirement file
 if [[ $PYTHON_VERSION == "2.7" ]]; then
-    pip install python==2.7.12
+    conda install -y python==2.7.12
 fi
 cat requirements.txt | \
 while read PKG; do
