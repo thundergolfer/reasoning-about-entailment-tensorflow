@@ -13,3 +13,4 @@ install:
   - ./run_in_environment.sh pip install --upgrade tensorflow
 script:
   - ./run_in_environment.sh python -m pytest tests/
+  - ./run_in_environment.sh ./linter.sh
