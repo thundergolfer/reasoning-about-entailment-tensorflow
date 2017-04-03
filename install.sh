@@ -39,6 +39,7 @@ else
   else
     echo "Python version must be set to '3.5' or '2.7'"
     exit 1
+  fi
 fi
 
 
@@ -56,6 +57,9 @@ $conda_command create -y python=$PYTHON_VERSION -p $VIRTUAL_ENV_PATH --file "con
 source run_in_environment.sh
 
 echo Installing pip requirement file
+if [[ $PYTHON_VERSION == "2.7" ]]; then
+    pip install python==2.7.12
+fi
 cat requirements.txt | \
 while read PKG; do
     pip install --upgrade $PKG --ignore-installed setuptools || true
