@@ -15,7 +15,7 @@ from batching import DataBatcher
 
 
 
-project_root = os.path.dirname(os.cwd())
+project_root = os.path.dirname(os.getcwd())
 parameters = {
     "run_dir": os.path.join(project_root, 'runs'),
     "dataset_directory": os.path.join(project_root, 'snli_1.0'),
@@ -64,7 +64,7 @@ def setup_logging(model_dir):
 
 
 
-def train(word2vec, dataset, parameters):
+def train(word_embeddings, dataset, parameters):
     modeldir = os.path.join(parameters["runs_dir"], parameters["model_name"])
     if not os.path.exists(modeldir):
         os.mkdir(modeldir)
@@ -74,6 +74,7 @@ def train(word2vec, dataset, parameters):
     savepath = os.path.join(modeldir, "save")
 
     device_string = "/gpu:{}".format(parameters["gpu"]) if parameters["gpu"] else "/cpu:0"
+    
     with tf.device(device_string):
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
         config_proto = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
@@ -86,23 +87,39 @@ def train(word2vec, dataset, parameters):
         keep_prob_ph = tf.placeholder(tf.float32, name="keep_prob")
 
         _projecter = TensorFlowTrainable()
-        projecter = _projecter.get_4Dweights(filter_height=1, filter_width=parameters["embedding_dim"], in_channels=1, out_channels=parameters["num_units"], name="projecter")
+        projecter = _projecter.get_4Dweights(filter_height=1,
+                                             filter_width=parameters["embedding_dim"],
+                                             in_channels=1, out_channels=parameters["num_units"],
+                                             name="projecter")
 
-        optimizer = tf.train.AdamOptimizer(learning_rate=parameters["learning_rate"], name="ADAM", beta1=0.9, beta2=0.999)
+        optimizer = tf.train.AdamOptimizer(learning_rate=parameters["learning_rate"],
+                                           name="ADAM", 
+                                           beta1=0.9,
+                                           beta2=0.999)
         
         with tf.variable_scope(name_or_scope="premise"):
-            premise = RNN(cell=LSTMCell, num_units=parameters["num_units"], embedding_dim=parameters["embedding_dim"], projecter=projecter, keep_prob=keep_prob_ph)
+            premise = RNN(cell=LSTMCell,
+                          num_units=parameters["num_units"],
+                          embedding_dim=parameters["embedding_dim"],
+                          projecter=projecter,
+                          keep_prob=keep_prob_ph)
             premise.process(sequence=premises_ph)
 
         with tf.variable_scope(name_or_scope="hypothesis"):
-            hypothesis = RNN(cell=AttentionLSTMCell, num_units=parameters["num_units"], embedding_dim=parameters["embedding_dim"], hiddens=premise.hiddens, states=premise.states, projecter=projecter, keep_prob=keep_prob_ph)
+            hypothesis = RNN(cell=AttentionLSTMCell,
+                             num_units=parameters["num_units"],
+                             embedding_dim=parameters["embedding_dim"],
+                             hiddens=premise.hiddens,
+                             states=premise.states,
+                             projecter=projecter,
+                             keep_prob=keep_prob_ph)
             hypothesis.process(sequence=hypothesis_ph)
 
         loss, loss_summary, accuracy, accuracy_summary = hypothesis.loss(targets=targets_ph)
 
         weight_decay = tf.reduce_sum([tf.reduce_sum(parameter) for parameter in premise.parameters + hypothesis.parameters])
 
-        global_loss = loss + parameters["weight_decay"] * weight_decay
+        global_loss = loss + (parameters["weight_decay"] * weight_decay)
 
         train_summary_op = tf.merge_summary([loss_summary, accuracy_summary])
         train_summary_writer = tf.train.SummaryWriter(logdir_train, sess.graph)
@@ -119,9 +136,10 @@ def train(word2vec, dataset, parameters):
 
         sess.run(tf.initialize_all_variables())
         
-        batcher = DataBatcher(word2vec=word2vec)
+        batcher = DataBatcher(word_embeddings)
         train_batches = batching.batch_generator(dataset=dataset["train"], num_epochs=parameters["num_epochs"], batch_size=parameters["batch_size"]["train"], sequence_length=parameters["sequence_length"])
         num_step_by_epoch = int(math.ceil(len(dataset["train"]["targets"]) / parameters["batch_size"]["train"]))
+        
         for train_step, (train_batch, epoch) in enumerate(train_batches):
             feed_dict = {
                             premises_ph: np.transpose(train_batch["premises"], (1, 0, 2)),
@@ -132,10 +150,12 @@ def train(word2vec, dataset, parameters):
 
             _, summary_str, train_loss, train_accuracy = sess.run([train_op, train_summary_op, loss, accuracy], feed_dict=feed_dict)
             train_summary_writer.add_summary(summary_str, train_step)
-            if train_step % 100 == 0:
+            
+            if train_step % 100 is 0:
                 sys.stdout.write("\rTRAIN | epoch={0}/{1}, step={2}/{3} | loss={4:.2f}, accuracy={5:.2f}%   ".format(epoch + 1, parameters["num_epochs"], train_step % num_step_by_epoch, num_step_by_epoch, train_loss, 100. * train_accuracy))
                 sys.stdout.flush()
-            if train_step % 5000 == 0:
+                
+            if train_step % 5000 is 0:
                 test_batches = batching.batch_generator(dataset=dataset["test"], num_epochs=1, batch_size=parameters["batch_size"]["test"], sequence_length=parameters["sequence_length"])
                 for test_step, (test_batch, _) in enumerate(test_batches):
                     feed_dict = {
@@ -150,8 +170,10 @@ def train(word2vec, dataset, parameters):
                     print()
                     test_summary_writer.add_summary(summary_str, train_step)
                     break
-            if train_step % 5000 == 0:
+                    
+            if train_step % 5000 is 0:
                 saver.save(sess, save_path=savepath, global_step=train_step)
+        
         print()
 
 
