@@ -18,7 +18,7 @@ def script_post_save(model, os_path, contents_manager, **kwargs):
 
     base, ext = os.path.splitext(os_path)
     index_filename_start = base.rfind('/') + 1
-    base = base[:index_filename_start] + 'code_mirrors/' + base[index_filename_start] # Save to subdirectory
+    base = base[:index_filename_start] + 'code_mirrors/' + base[index_filename_start:] # Save to subdirectory
     py_fname = base + '.py'
     script, resources = _script_exporter.from_filename(os_path)
     script_fname = base + resources.get('output_extension', '.txt')
