@@ -26,7 +26,7 @@ class DataBatcher():
                 self._targets.append(dataset["targets"][idx])
 
                 if (len(self._targets) == batch_size or
-                    (i == (len(permutation) - 1) and epoch == (num_epochs - 1)):
+                    (i == (len(permutation) - 1) and epoch == (num_epochs - 1))):
                     batch = {
                         "premises": self._premises,
                         "hypothesis": self._hypothesis,
