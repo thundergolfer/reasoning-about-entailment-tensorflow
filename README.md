@@ -1,4 +1,4 @@
-# Implementation: *Reasoning About Entailment With Neural Attention* [![Build Status](https://travis-ci.com/thundergolfer/reasoning-about-entailment-tensorflow.svg?token=yHGWQ42iK2BPk1FjaUMc&branch=master)](https://travis-ci.com/thundergolfer/reasoning-about-entailment-tensorflow)
+# Implementation: *Reasoning About Entailment With Neural Attention* [![Build Status](https://travis-ci.com/thundergolfer/reasoning-about-entailment-tensorflow.svg?token=yHGWQ42iK2BPk1FjaUMc&branch=master)](https://travis-ci.com/thundergolfer/reasoning-about-entailment-tensorflow) [![Code Climate](https://codeclimate.com/repos/58fb8909e6e27a027b001f9f/badges/901756218f7b5cb74762/gpa.svg)](https://codeclimate.com/repos/58fb8909e6e27a027b001f9f/feed) [![Test Coverage](https://codeclimate.com/repos/58fb8909e6e27a027b001f9f/badges/901756218f7b5cb74762/coverage.svg)](https://codeclimate.com/repos/58fb8909e6e27a027b001f9f/coverage)
 
 ----
 
