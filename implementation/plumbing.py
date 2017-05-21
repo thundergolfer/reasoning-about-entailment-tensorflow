@@ -1,7 +1,7 @@
 from __future__ import print_function
 import os
 import pandas as pd
-from gensim.models import word2vec
+from gensim.models import KeyedVectors
 
 
 def load_dataset(dataset_dir):
@@ -18,7 +18,8 @@ def load_dataset(dataset_dir):
 
 
 def load_word_embeddings(embeddings_dir):
-    return word2vec.Word2Vec.load_word2vec_format(embeddings_dir, binary=True)
+    print("Loading Word Embeddings")
+    return KeyedVectors.load_word2vec_format(embeddings_dir, binary=True)
 
 
 def dataset_preprocess(dataset):

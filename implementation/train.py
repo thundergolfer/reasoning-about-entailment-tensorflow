@@ -46,7 +46,7 @@ parameters.update(training_parameters)
 # In[ ]:
 
 dataset = load_dataset(parameters['dataset_directory'])
-embeddings = load_embeddings(parameters['embeddings_path'])
+embeddings = load_word_embeddings(parameters['embeddings_path'])
 
 
 # In[ ]:
