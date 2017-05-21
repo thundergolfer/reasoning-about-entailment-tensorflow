@@ -10,7 +10,7 @@ def load_dataset(dataset_dir):
         split_path = os.path.join(dataset_dir, 'snli_1.0_{}.txt'.format(split))
         df = pd.read_csv(split_path, delimiter='\t')
         dataset[split] = {
-                          "premises": df[["sentence"]].values,
+                          "premises": df[["sentence1"]].values,
                           "hypothesis": df[["sentence2"]].values,
                           "targets": df[["gold_label"]].values
                           }
