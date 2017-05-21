@@ -32,7 +32,7 @@ training_parameters = {
     "batch_size_train": 24,
     "batch_size_dev": 10000,
     "batch_size_test": 10000,
-    "gpu": "", # set to empty string to use CPU
+    "gpu": 0, # set to empty string to use CPU
     "num_epochs": 45,
     "embedding_dim": 300,
     "sequence_length": 20,
