@@ -5,6 +5,7 @@ from gensim.models import KeyedVectors
 
 
 def load_dataset(dataset_dir):
+    print("Loading SNLI dataset")
     dataset = {}
     for split in ['train', 'dev', 'test']:
         split_path = os.path.join(dataset_dir, 'snli_1.0_{}.txt'.format(split))
