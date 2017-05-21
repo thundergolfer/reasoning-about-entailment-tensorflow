@@ -19,7 +19,7 @@ from batching import DataBatcher
 
 project_root = os.path.dirname(os.getcwd())
 parameters = {
-    "run_dir": os.path.join(project_root, 'runs'),
+    "runs_dir": os.path.join(project_root, 'runs'),
     "dataset_directory": os.path.join(project_root, 'snli_1.0'),
     "embeddings_path": os.path.join(project_root, 'GNews-Vectors.bin'),
     "model_name": "attention_lstm",
