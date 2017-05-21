@@ -64,6 +64,8 @@ def setup_logging(model_dir):
     logdir_dev = os.path.join(logdir, "dev")
     if not os.path.exists(logdir_dev):
         os.mkdir(logdir_dev)
+
+    print("Logging setup done")
         
     return logdir_train, logdir_test, logdir_dev
 
@@ -92,7 +94,7 @@ def train(word_embeddings, dataset, parameters):
         targets_ph = tf.placeholder(tf.int32, shape=[None], name="targets")
         keep_prob_ph = tf.placeholder(tf.float32, name="keep_prob")
 
-        _projecter = TensorFlowTrainable()
+        _projecter = TensorflowTrainable()
         projecter = _projecter.get_4Dweights(filter_height=1,
                                              filter_width=parameters["embedding_dim"],
                                              in_channels=1, out_channels=parameters["num_units"],
