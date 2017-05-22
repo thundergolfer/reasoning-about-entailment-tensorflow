@@ -1,23 +1,18 @@
-
-# coding: utf-8
-
-# In[3]:
-
 from __future__ import print_function
 import tensorflow as tf
-import pandas as pd
 import numpy as np
 
+import sys
 import os
-from plumbing import load_dataset, load_word_embeddings, dataset_preprocess
+import math
+from plumbing import load_dataset, load_word_embeddings
 
 from networks import TensorflowTrainable, RNN, LSTMCell, AttentionLSTMCell
 from batching import DataBatcher
 
 
-# In[4]:
-
 project_root = os.path.dirname(os.getcwd())
+
 parameters = {
     "runs_dir": os.path.join(project_root, 'runs'),
     "dataset_directory": os.path.join(project_root, 'snli_1.0'),
@@ -32,24 +27,21 @@ training_parameters = {
     "batch_size_train": 24,
     "batch_size_dev": 10000,
     "batch_size_test": 10000,
-    "gpu": 0, # set to empty string to use CPU
+    "gpu": 0,  # set to empty string to use CPU
     "num_epochs": 45,
     "embedding_dim": 300,
     "sequence_length": 20,
-    "num_units": 100 # LSTM output dimension (k in the original paper)
+    "num_units": 100  # LSTM output dimension (k in the original paper)
 }
 
 parameters.update(training_parameters)
 
 # #### Load Dataset + Pre-trained Embeddings
 
-# In[ ]:
 
 dataset = load_dataset(parameters['dataset_directory'])
 embeddings = load_word_embeddings(parameters['embeddings_path'])
 
-
-# In[ ]:
 
 def setup_logging(model_dir):
     logdir = os.path.join(model_dir, "log")
@@ -66,23 +58,21 @@ def setup_logging(model_dir):
         os.mkdir(logdir_dev)
 
     print("Logging setup done")
-        
+
     return logdir_train, logdir_test, logdir_dev
 
-
-# In[5]:
 
 def train(word_embeddings, dataset, parameters):
     modeldir = os.path.join(parameters["runs_dir"], parameters["model_name"])
     if not os.path.exists(modeldir):
         os.mkdir(modeldir)
-        
+
     logdir_train, logdir_test, logdir_dev = setup_logging(modeldir)
 
     savepath = os.path.join(modeldir, "save")
 
     device_string = "/gpu:{}".format(parameters["gpu"]) if parameters["gpu"] else "/cpu:0"
-    
+
     with tf.device(device_string):
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
         config_proto = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
@@ -101,10 +91,10 @@ def train(word_embeddings, dataset, parameters):
                                              name="projecter")
 
         optimizer = tf.train.AdamOptimizer(learning_rate=parameters["learning_rate"],
-                                           name="ADAM", 
+                                           name="ADAM",
                                            beta1=0.9,
                                            beta2=0.999)
-        
+
         with tf.variable_scope(name_or_scope="premise"):
             premise = RNN(cell=LSTMCell,
                           num_units=parameters["num_units"],
@@ -133,60 +123,57 @@ def train(word_embeddings, dataset, parameters):
         train_summary_writer = tf.train.SummaryWriter(logdir_train, sess.graph)
         test_summary_op = tf.merge_summary([loss_summary, accuracy_summary])
         test_summary_writer = tf.train.SummaryWriter(logdir_test)
-        
+
         saver = tf.train.Saver(max_to_keep=10)
-        summary_writer = tf.train.SummaryWriter(logdir)
+        # summary_writer = tf.train.SummaryWriter(logdir)
         tf.train.write_graph(sess.graph_def, modeldir, "graph.pb", as_text=False)
-        loader = tf.train.Saver(tf.all_variables())
+        # loader = tf.train.Saver(tf.all_variables())
 
         optimizer = tf.train.AdamOptimizer(learning_rate=parameters["learning_rate"], name="ADAM", beta1=0.9, beta2=0.999)
         train_op = optimizer.minimize(global_loss)
 
         sess.run(tf.initialize_all_variables())
-        
+
         batcher = DataBatcher(word_embeddings)
-        train_batches = batching.batch_generator(dataset=dataset["train"], num_epochs=parameters["num_epochs"], batch_size=parameters["batch_size"]["train"], sequence_length=parameters["sequence_length"])
+        train_batches = batcher.batch_generator(dataset=dataset["train"], num_epochs=parameters["num_epochs"], batch_size=parameters["batch_size"]["train"], sequence_length=parameters["sequence_length"])
         num_step_by_epoch = int(math.ceil(len(dataset["train"]["targets"]) / parameters["batch_size"]["train"]))
-        
+
         for train_step, (train_batch, epoch) in enumerate(train_batches):
             feed_dict = {
-                            premises_ph: np.transpose(train_batch["premises"], (1, 0, 2)),
-                            hypothesis_ph: np.transpose(train_batch["hypothesis"], (1, 0, 2)),
-                            targets_ph: train_batch["targets"],
-                            keep_prob_ph: parameters["keep_prob"],
-                        }
+                premises_ph: np.transpose(train_batch["premises"], (1, 0, 2)),
+                hypothesis_ph: np.transpose(train_batch["hypothesis"], (1, 0, 2)),
+                targets_ph: train_batch["targets"],
+                keep_prob_ph: parameters["keep_prob"],
+            }
 
             _, summary_str, train_loss, train_accuracy = sess.run([train_op, train_summary_op, loss, accuracy], feed_dict=feed_dict)
             train_summary_writer.add_summary(summary_str, train_step)
-            
+
             if train_step % 100 is 0:
                 sys.stdout.write("\rTRAIN | epoch={0}/{1}, step={2}/{3} | loss={4:.2f}, accuracy={5:.2f}%   ".format(epoch + 1, parameters["num_epochs"], train_step % num_step_by_epoch, num_step_by_epoch, train_loss, 100. * train_accuracy))
                 sys.stdout.flush()
-                
+
             if train_step % 5000 is 0:
-                test_batches = batching.batch_generator(dataset=dataset["test"], num_epochs=1, batch_size=parameters["batch_size"]["test"], sequence_length=parameters["sequence_length"])
+                test_batches = batcher.batch_generator(dataset=dataset["test"], num_epochs=1, batch_size=parameters["batch_size"]["test"], sequence_length=parameters["sequence_length"])
                 for test_step, (test_batch, _) in enumerate(test_batches):
                     feed_dict = {
-                                    premises_ph: np.transpose(test_batch["premises"], (1, 0, 2)),
-                                    hypothesis_ph: np.transpose(test_batch["hypothesis"], (1, 0, 2)),
-                                    targets_ph: test_batch["targets"],
-                                    keep_prob_ph: 1.,
-                                }
+                        premises_ph: np.transpose(test_batch["premises"], (1, 0, 2)),
+                        hypothesis_ph: np.transpose(test_batch["hypothesis"], (1, 0, 2)),
+                        targets_ph: test_batch["targets"],
+                        keep_prob_ph: 1.,
+                    }
 
                     summary_str, test_loss, test_accuracy = sess.run([test_summary_op, loss, accuracy], feed_dict=feed_dict)
                     print("\nTEST | loss={0:.2f}, accuracy={1:.2f}%   ".format(test_loss, 100. * test_accuracy))
                     print()
                     test_summary_writer.add_summary(summary_str, train_step)
                     break
-                    
+
             if train_step % 5000 is 0:
                 saver.save(sess, save_path=savepath, global_step=train_step)
-        
+
         print()
 
 
-# In[ ]:
-
-
-if  __name__ == '__main__':
-	train(embeddings, dataset, parameters)
+if __name__ == '__main__':
+    train(embeddings, dataset, parameters)
