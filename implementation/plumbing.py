@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import pandas as pd
 from gensim.models import word2vec
