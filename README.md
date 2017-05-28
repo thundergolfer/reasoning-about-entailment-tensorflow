@@ -71,6 +71,10 @@ Jonathon Belotti ([thundergolfer](https://github.com/thundergolfer)) - [@jonobel
 
 4. **Samuel R. Bowman, Gabor Angeli, Christopher Potts, Christopher D. Manning, The Stanford Natural Language Processing Group**, *[A large annotated corpus for learning natural language inference](http://nlp.stanford.edu/projects/snli/)*,  2015.
 
+### Credit 
+
+The work done in [borelien/entailment-neural-attention-lstm-tf](https://github.com/borelien/entailment-neural-attention-lstm-tf) and [shyamupa/snli-entailment](https://github.com/shyamupa/snli-entailment) was helpful to me in this project. I hope you find that my work has extended and expanded theirs in interesting and useful ways.
+
 ### License
 
 This project is available under the [MIT License](https://choosealicense.com/licenses/mit/)
