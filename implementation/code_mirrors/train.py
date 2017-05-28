@@ -1,7 +1,4 @@
-
 # coding: utf-8
-
-
 from __future__ import print_function
 import tensorflow as tf
 import pandas as pd
@@ -59,7 +56,7 @@ def setup_logging(model_dir):
     logdir_dev = os.path.join(logdir, "dev")
     if not os.path.exists(logdir_dev):
         os.mkdir(logdir_dev)
-        
+
     return logdir_train, logdir_test, logdir_dev
 
 
@@ -68,13 +65,13 @@ def train(word_embeddings, dataset, parameters):
     modeldir = os.path.join(parameters["runs_dir"], parameters["model_name"])
     if not os.path.exists(modeldir):
         os.mkdir(modeldir)
-        
+
     logdir_train, logdir_test, logdir_dev = setup_logging(modeldir)
 
     savepath = os.path.join(modeldir, "save")
 
     device_string = "/gpu:{}".format(parameters["gpu"]) if parameters["gpu"] else "/cpu:0"
-    
+
     with tf.device(device_string):
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
         config_proto = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
@@ -93,10 +90,10 @@ def train(word_embeddings, dataset, parameters):
                                              name="projecter")
 
         optimizer = tf.train.AdamOptimizer(learning_rate=parameters["learning_rate"],
-                                           name="ADAM", 
+                                           name="ADAM",
                                            beta1=0.9,
                                            beta2=0.999)
-        
+
         with tf.variable_scope(name_or_scope="premise"):
             premise = RNN(cell=LSTMCell,
                           num_units=parameters["num_units"],
@@ -125,7 +122,7 @@ def train(word_embeddings, dataset, parameters):
         train_summary_writer = tf.train.SummaryWriter(logdir_train, sess.graph)
         test_summary_op = tf.merge_summary([loss_summary, accuracy_summary])
         test_summary_writer = tf.train.SummaryWriter(logdir_test)
-        
+
         saver = tf.train.Saver(max_to_keep=10)
         summary_writer = tf.train.SummaryWriter(logdir)
         tf.train.write_graph(sess.graph_def, modeldir, "graph.pb", as_text=False)
@@ -135,11 +132,11 @@ def train(word_embeddings, dataset, parameters):
         train_op = optimizer.minimize(global_loss)
 
         sess.run(tf.initialize_all_variables())
-        
+
         batcher = DataBatcher(word_embeddings)
         train_batches = batching.batch_generator(dataset=dataset["train"], num_epochs=parameters["num_epochs"], batch_size=parameters["batch_size"]["train"], sequence_length=parameters["sequence_length"])
         num_step_by_epoch = int(math.ceil(len(dataset["train"]["targets"]) / parameters["batch_size"]["train"]))
-        
+
         for train_step, (train_batch, epoch) in enumerate(train_batches):
             feed_dict = {
                             premises_ph: np.transpose(train_batch["premises"], (1, 0, 2)),
@@ -150,11 +147,11 @@ def train(word_embeddings, dataset, parameters):
 
             _, summary_str, train_loss, train_accuracy = sess.run([train_op, train_summary_op, loss, accuracy], feed_dict=feed_dict)
             train_summary_writer.add_summary(summary_str, train_step)
-            
+
             if train_step % 100 is 0:
                 sys.stdout.write("\rTRAIN | epoch={0}/{1}, step={2}/{3} | loss={4:.2f}, accuracy={5:.2f}%   ".format(epoch + 1, parameters["num_epochs"], train_step % num_step_by_epoch, num_step_by_epoch, train_loss, 100. * train_accuracy))
                 sys.stdout.flush()
-                
+
             if train_step % 5000 is 0:
                 test_batches = batching.batch_generator(dataset=dataset["test"], num_epochs=1, batch_size=parameters["batch_size"]["test"], sequence_length=parameters["sequence_length"])
                 for test_step, (test_batch, _) in enumerate(test_batches):
@@ -170,14 +167,8 @@ def train(word_embeddings, dataset, parameters):
                     print()
                     test_summary_writer.add_summary(summary_str, train_step)
                     break
-                    
+
             if train_step % 5000 is 0:
                 saver.save(sess, save_path=savepath, global_step=train_step)
-        
+
         print()
-
-
-
-
-
-
