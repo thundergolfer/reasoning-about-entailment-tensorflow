@@ -1,24 +1,27 @@
 from __future__ import print_function
 import os
 import pandas as pd
-from gensim.models import word2vec
+from gensim.models import KeyedVectors
 
 
 def load_dataset(dataset_dir):
+    print("Loading SNLI dataset")
     dataset = {}
     for split in ['train', 'dev', 'test']:
         split_path = os.path.join(dataset_dir, 'snli_1.0_{}.txt'.format(split))
         df = pd.read_csv(split_path, delimiter='\t')
         dataset[split] = {
-                          "premises": df[["sentence"]].values,
-                          "hypothesis": df[["sentence2"]].values,
-                          "targets": df[["gold_label"]].values
-                          }
+            "premises": df[["sentence1"]].values,
+            "hypothesis": df[["sentence2"]].values,
+            "targets": df[["gold_label"]].values
+        }
+
     return dataset
 
 
 def load_word_embeddings(embeddings_dir):
-    return word2vec.Word2Vec.load_word2vec_format(embeddings_dir, binary=True)
+    print("Loading Word Embeddings")
+    return KeyedVectors.load_word2vec_format(embeddings_dir, binary=True)
 
 
 def dataset_preprocess(dataset):

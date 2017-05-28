@@ -18,9 +18,9 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export VIRTUAL_ENV_PATH="${VIRTUAL_ENV_PATH:=${script_dir}/virtual_env}"
 export MINICONDA_VERSION="${MINICONDA_VERSION:-3.9.1}"
 
-
 if [ `uname` = "Darwin" ]; then
   export MINICONDA_DIRECTORY="${MINICONDA_DIRECTORY:=/Users/${USER}/miniconda-${MINICONDA_VERSION}}"
 else
-  export MINICONDA_DIRECTORY="${MINICONDA_DIRECTORY:=/opt/miniconda-${MINICONDA_VERSION}}"
+  export MINICONDA_DIRECTORY="${MINICONDA_DIRECTORY:=/home/${USER}/miniconda-${MINICONDA_VERSION}}"
 fi
+

@@ -13,6 +13,7 @@
 
 # Set Python version. Checks for whether we're in a Travis build
 PYTHON_VERSION="${TRAVIS_PYTHON_VERSION:-3.5}" # or sub in 2.7 for 3.5
+USE_GPU=true # or set to false
 
 # install Tensorflow
 if [[ `uname` == "Darwin" ]]; then
@@ -32,10 +33,20 @@ else
   echo "installing for Linux Architecture"
   if [[ $PYTHON_VERSION == "3.5" ]]; then
     CURRTF=tensorflow-0.10.0-cp35-cp35m-linux_x86_64.whl
-    curl https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.10.0-cp35-cp35m-linux_x86_64.whl > ./tensorflow-0.10.0-cp35-cp35m-linux_x86_64.whl
+    if [[ $USE_GPU ]]; then
+	echo "installing GPU enabled Tensorflow"
+	curl https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.10.0-cp35-cp35m-linux_x86_64.whl > ./tensorflow-0.10.0-cp35-cp35m-linux_x86_64.whl
+    else
+    	curl https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.10.0-cp35-cp35m-linux_x86_64.whl > ./tensorflow-0.10.0-cp35-cp35m-linux_x86_64.whl
+    fi
   elif [[ $PYTHON_VERSION == "2.7" ]]; then
     CURRTF=tensorflow-0.10.0-cp27-none-linux_x86_64.whl
-    curl https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.10.0-cp27-none-linux_x86_64.whl > ./tensorflow-0.10.0-cp27-none-linux_x86_64.whl
+    if [[ $USE_GPU ]]; then
+	echo "installing GPU enabled Tensorflow"
+	curl https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.10.0-cp27-none-linux_x86_64.whl > ./tensorflow-0.10.0-cp27-none-linux_x86_64.whl
+    else
+    	curl https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.10.0-cp27-none-linux_x86_64.whl > ./tensorflow-0.10.0-cp27-none-linux_x86_64.whl
+    fi
   else
     echo "Python version must be set to '3.5' or '2.7'"
     exit 1
