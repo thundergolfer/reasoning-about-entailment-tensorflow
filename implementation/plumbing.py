@@ -15,7 +15,7 @@ def load_dataset(dataset_dir):
             "hypothesis": df[["sentence2"]].values,
             "targets": df[["gold_label"]].values
         }
-        
+
     return dataset
 
 
