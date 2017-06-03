@@ -45,7 +45,9 @@ If everything in the install script went OK, you can enter the created virtual e
 
 ## Usage
 
-`coming soon`
+Currently training is done by `cd implementation/ && python train.py`
+
+`the rest coming soon`
 
 
 ## Results
