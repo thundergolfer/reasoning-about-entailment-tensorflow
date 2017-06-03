@@ -1,0 +1,10 @@
+# Conda Environment Specifications
+# Contains High-Performance MKL Libraries
+python==2.7.12
+mkl==11.3.3
+numpy==1.11.1
+scipy==0.18.0
+scikit-learn==0.17.1
+numexpr==2.6.1
+libgcc==4.8.5
+pytest==2.8.5

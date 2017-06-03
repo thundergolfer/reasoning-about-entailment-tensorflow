@@ -1,4 +1,3 @@
-#!/bin/bash -e
 # This script ensures that the environment variables used for the Python virtual env and Miniconda exist.
 # To override the default environment variables, you can define them before running this script.
 #
@@ -23,4 +22,3 @@ if [ `uname` = "Darwin" ]; then
 else
   export MINICONDA_DIRECTORY="${MINICONDA_DIRECTORY:=/home/${USER}/miniconda-${MINICONDA_VERSION}}"
 fi
-
