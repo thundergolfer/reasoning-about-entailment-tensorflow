@@ -17,10 +17,10 @@ class DataBatcher():
             permutation = np.random.permutation(ids)
 
             for i, idx in enumerate(permutation):
-                self._premises.append(self.preprocess(sequence=dataset["premises"][idx], sequence_length=seq_length))
+                self._premises.append(self.preprocess(seq=dataset["premises"][idx], seq_len=seq_length))
                 self._hypothesis.append(self.preprocess(
-                                                        sequence=dataset["hypothesis"][idx],
-                                                        sequence_length=seq_length,
+                                                        seq=dataset["hypothesis"][idx],
+                                                        seq_len=seq_length,
                                                         is_delimiter=True)
                                                         )
                 self._targets.append(dataset["targets"][idx])

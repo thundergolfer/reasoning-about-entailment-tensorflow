@@ -1,9 +1,14 @@
+
 # Ignoring work environment setup files
 install_app_in_numbats.sh
 run_in_numbats_env.sh
+scripts/app_installer.py
 
 # SNLI Dataset files
 snli_1.0
+data/snli*
+data/multinli_*
+data/SICK*
 *.zip
 
 # Ignore Any Wheel files
