@@ -28,20 +28,31 @@ entailment dataset.
 
 `coming soon`
 
-## Installation 
+## Installation
+
+#### Prerequisites
 
 First clone this repository with `git clone git@github.com:thundergolfer/reasoning-about-entailment-tensorflow.git` **OR** you can also [fork](https://github.com/thundergolfer/reasoning-about-entailment-tensorflow#fork-destination-box) the repository.
 
-Once cloned, install [Miniconda](https://conda.io/miniconda.html) with `./install_miniconda.sh`. That should succeed outputting `Install complete <INSTALL LOCATION>` in the terminal. 
+Once cloned, install [Miniconda](https://conda.io/miniconda.html) with `./install_miniconda.sh`. That should succeed outputting `Install complete <INSTALL LOCATION>` in the terminal.
 
 Now the Miniconda has been installed you can install all packages into a nice `conda` virtual environment with `./install.sh`. *[Currently this doesn't support Windows, sorry]*
 
-If everything in the install script went OK, you can enter the created virtual environment with `source ./run_in_environment.sh`. 
+If everything in the install script went OK, you can enter the created virtual environment with `source ./run_in_environment.sh`.
 
-#### Remaining Parts For Install
+#### Data & Datasets
 
 * Download the SNLI Dataset ([info](https://nlp.stanford.edu/projects/snli/)): `./scripts/get_snli_dataset.sh`
 * Download the pre-trained Word2Vec model ([info](https://en.wikipedia.org/wiki/Word2vec)): `./scripts/get_word2vec.sh`
+
+##### Other Datasets
+
+There are two other datasets that I thought would be interesting to use. First is [*Sentences Involving Compositional Knowledge*](http://clic.cimec.unitn.it/composes/sick.html), a precursor to the *SNLI* dataset.
+
+Second is the [*Multi-Genre NLI Corpus*](https://www.nyu.edu/projects/bowman/multinli/) (*MultiNLI*), which is a successor to the *SNLI* dataset and in some ways superior to it. This new corpus can be combined with the *SNLI* for training. It is also of the same format to the *SNLI*, so the same loading and processing code can be used.
+
+* To get *SICK* run `scripts/get_sick_dataset.sh`
+* To get *MultiNLI* run `scripts/get_multiNLI_dateset.sh`
 
 ## Usage
 
@@ -73,7 +84,7 @@ Jonathon Belotti ([thundergolfer](https://github.com/thundergolfer)) - [@jonobel
 
 4. **Samuel R. Bowman, Gabor Angeli, Christopher Potts, Christopher D. Manning, The Stanford Natural Language Processing Group**, *[A large annotated corpus for learning natural language inference](http://nlp.stanford.edu/projects/snli/)*,  2015.
 
-### Credit 
+### Credit
 
 The work done in [borelien/entailment-neural-attention-lstm-tf](https://github.com/borelien/entailment-neural-attention-lstm-tf) and [shyamupa/snli-entailment](https://github.com/shyamupa/snli-entailment) was helpful to me in this project. I hope you find that my work has extended and expanded theirs in interesting and useful ways.
 
