@@ -119,10 +119,10 @@ def train(word_embeddings, dataset, parameters):
 
         global_loss = loss + (parameters["weight_decay"] * weight_decay)
 
-        train_summary_op = tf.merge_summary([loss_summary, accuracy_summary])
-        train_summary_writer = tf.train.SummaryWriter(logdir_train, sess.graph)
-        test_summary_op = tf.merge_summary([loss_summary, accuracy_summary])
-        test_summary_writer = tf.train.SummaryWriter(logdir_test)
+        train_summary_op = tf.summary.merge([loss_summary, accuracy_summary])
+        train_summary_writer = tf.summary.FileWriter(logdir_train, sess.graph)
+        test_summary_op = tf.summary.merge([loss_summary, accuracy_summary])
+        test_summary_writer = tf.summary.FileWriter(logdir_test)
 
         saver = tf.train.Saver(max_to_keep=10)
         # summary_writer = tf.train.SummaryWriter(logdir)
@@ -132,7 +132,7 @@ def train(word_embeddings, dataset, parameters):
         optimizer = tf.train.AdamOptimizer(learning_rate=parameters["learning_rate"], name="ADAM", beta1=0.9, beta2=0.999)
         train_op = optimizer.minimize(global_loss)
 
-        sess.run(tf.initialize_all_variables())
+        sess.run(tf.global_variables_initializer())
 
         batcher = DataBatcher(word_embeddings)
         train_batches = batcher.batch_generator(dataset=dataset["train"], num_epochs=parameters["num_epochs"], batch_size=parameters["batch_size"]["train"], sequence_length=parameters["sequence_length"])

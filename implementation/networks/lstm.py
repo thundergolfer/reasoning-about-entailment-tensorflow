@@ -28,11 +28,11 @@ class LSTMCell(TensorflowTrainable):
         self.c = [self.get_biases(dim_out=self._num_units, name="c", trainable=False)]
 
     def initialize_something(self, input):
-        self.batch_size_vector = 1 + 0 * tf.expand_dims(tf.unpack(tf.transpose(input, [1, 0]))[0], 0)
+        self.batch_size_vector = 1 + 0 * tf.expand_dims(tf.unstack(tf.transpose(input, [1, 0]))[0], 0)
         self.h = [self.get_biases(dim_out=self._num_units, name="h", trainable=False) * self.batch_size_vector]
 
     def process(self, input, **kwargs):
-        H = tf.concat(0, [tf.transpose(input, perm=[1, 0]), self.h[-1]])
+        H = tf.concat(axis=0, values=[tf.transpose(input, perm=[1, 0]), self.h[-1]])
         i = tf.sigmoid(x=tf.add(tf.matmul(self.w_i, H), self.b_i))
         f = tf.sigmoid(x=tf.add(tf.matmul(self.w_f, H), self.b_f))
         o = tf.sigmoid(x=tf.add(tf.matmul(self.w_o, H), self.b_o))
