@@ -5,7 +5,7 @@ import numpy as np
 import sys
 import os
 import math
-from plumbing import load_dataset, load_word_embeddings
+from plumbing import load_dataset, load_word_embeddings, dataset_preprocess
 
 from networks import TensorflowTrainable, RNN, LSTMCell, AttentionLSTMCell
 from batching import DataBatcher
@@ -20,13 +20,20 @@ parameters = {
     "model_name": "attention_lstm",
 }
 
+batch_parameters = {
+    "batch_size_train": 24,
+    "batch_size_dev": 10000,
+    "batch_size_test": 10000
+}
+
 training_parameters = {
     "learning_rate": 0.001,
     "weight_decay": 0.0,
     "keep_prob": 0.8,
-    "batch_size_train": 24,
-    "batch_size_dev": 10000,
-    "batch_size_test": 10000,
+    "batch_size": {"train": batch_parameters['batch_size_train'], 
+		   "dev": batch_parameters['batch_size_dev'],
+	 	   "test": batch_parameters['batch_size_test']
+		  },
     "gpu": 0,  # set to empty string to use CPU
     "num_epochs": 45,
     "embedding_dim": 300,
@@ -39,7 +46,7 @@ parameters.update(training_parameters)
 # #### Load Dataset + Pre-trained Embeddings
 
 
-dataset = load_dataset(parameters['dataset_directory'])
+dataset = dataset_preprocess(load_dataset(parameters['dataset_directory']))
 embeddings = load_word_embeddings(parameters['embeddings_path'])
 
 
@@ -135,7 +142,7 @@ def train(word_embeddings, dataset, parameters):
         sess.run(tf.global_variables_initializer())
 
         batcher = DataBatcher(word_embeddings)
-        train_batches = batcher.batch_generator(dataset=dataset["train"], num_epochs=parameters["num_epochs"], batch_size=parameters["batch_size"]["train"], sequence_length=parameters["sequence_length"])
+        train_batches = batcher.batch_generator(dataset=dataset["train"], num_epochs=parameters["num_epochs"], batch_size=parameters["batch_size"]["train"], seq_length=parameters["sequence_length"])
         num_step_by_epoch = int(math.ceil(len(dataset["train"]["targets"]) / parameters["batch_size"]["train"]))
 
         for train_step, (train_batch, epoch) in enumerate(train_batches):
@@ -154,7 +161,7 @@ def train(word_embeddings, dataset, parameters):
                 sys.stdout.flush()
 
             if train_step % 5000 is 0:
-                test_batches = batcher.batch_generator(dataset=dataset["test"], num_epochs=1, batch_size=parameters["batch_size"]["test"], sequence_length=parameters["sequence_length"])
+                test_batches = batcher.batch_generator(dataset=dataset["test"], num_epochs=1, batch_size=parameters["batch_size"]["test"], seq_length=parameters["sequence_length"])
                 for test_step, (test_batch, _) in enumerate(test_batches):
                     feed_dict = {
                         premises_ph: np.transpose(test_batch["premises"], (1, 0, 2)),
