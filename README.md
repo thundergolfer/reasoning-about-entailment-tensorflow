@@ -26,6 +26,7 @@ entailment dataset.
 
 ## Requirements
 
+* `python 2.7` (probably works on Python 3 but untested)
 * `tensorflow 1.0.0`
 * `gensim` (for loading word embeddings)
 * `numpy` and `pandas`
