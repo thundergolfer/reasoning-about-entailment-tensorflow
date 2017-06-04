@@ -27,22 +27,35 @@ def load_word_embeddings(embeddings_dir):
 
 
 def dataset_preprocess(dataset):
-    preprocessed_ds = dict((type_set, {"premises": [], "hypothesis": [], "targets": []}) for type_set in dataset)
+    logger.info("Tokenisation started...")
+    preprocessed_ds = dict((split, {"premises": [], "hypothesis": [], "targets": []}) for split in dataset)
     for split in dataset:
         map_targets = {"neutral": 0, "entailment": 1, "contradiction": 2}
         num_ids = len(dataset[split]["targets"])
 
         for i in range(num_ids):
-            try:
-                premises_tokens = [word for word in sequence_to_clean_tokens(dataset[type_set]["premises"][i][0])]
-                hypothesis_tokens = [word for word in sequence_to_clean_tokens(dataset[type_set]["hypothesis"][i][0])]
-                target = map_targets[dataset[type_set]["targets"][i][0]]
-            except Exception as e:
-                print(e.message)
-            else:
-                preprocessed_ds[type_set]["premises"].append(premises_tokens)
-                preprocessed_ds[type_set]["hypothesis"].append(hypothesis_tokens)
-                preprocessed_ds[type_set]["targets"].append(target)
+            premise, hypothesis  = dataset[split]["premises"][i][0], dataset[split]["hypothesis"][i][0]
+	    target = dataset[split]["targets"][i][0]
+		
+	    if type(premise) is not str or type(hypothesis) is not str:
+	        # some examples have "N/A" instead of entry, which gets mapped by pandas to 'nan'
+	        continue
+		
+	    if target not in map_targets:
+		# From the SNLI dataset README:
+	        # gold_label: This is the label chosen by the majority of annotators. Where no majority exists, this is '-', and the pair should
+		#  not be included when evaluating hard classification accuracy.
+	        continue
+
+            premises_tokens = [word for word in sequence_to_clean_tokens(premise)]
+            hypothesis_tokens = [word for word in sequence_to_clean_tokens(hypothesis)]
+            target = map_targets[target]
+
+            preprocessed_ds[split]["premises"].append(premises_tokens)
+            preprocessed_ds[split]["hypothesis"].append(hypothesis_tokens)
+            preprocessed_ds[split]["targets"].append(target)
+
+    logger.info("Tokenisation done")
 
     return preprocessed_ds
 
