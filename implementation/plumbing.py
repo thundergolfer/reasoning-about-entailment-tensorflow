@@ -1,8 +1,10 @@
 from __future__ import print_function
+import logging
 import os
 import pandas as pd
 from gensim.models import KeyedVectors
 
+logger = logging.getLogger(__name__)
 
 def load_dataset(dataset_dir):
     print("Loading SNLI dataset")
