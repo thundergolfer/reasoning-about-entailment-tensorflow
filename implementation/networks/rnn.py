@@ -26,7 +26,7 @@ class RNN(TensorflowTrainable):
         noisy_sequence = tf.expand_dims(tf.transpose(noisy_sequence, [1, 0, 2]), 3)
         projected_sequence = tf.transpose(tf.squeeze(tf.nn.conv2d(input=noisy_sequence, filter=self._projecter, strides=[1, 1, 1, 1], padding="VALID"), [2]), [1, 0, 2])
 
-        list_sequence = tf.unpack(projected_sequence)
+        list_sequence = tf.unstack(projected_sequence)
         self._cell.initialize_something(input=list_sequence[0])
         for i, input in enumerate(list_sequence):
             self._cell.process(input=input, delimiter=i==0)
@@ -44,12 +44,12 @@ class RNN(TensorflowTrainable):
             raise Exception("You shouldn't have been there.")
         else:
             with tf.name_scope("loss") as scope:
-                loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(self.get_predictions(), targets))
-                loss_summary = tf.scalar_summary("loss", loss)
+                loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.get_predictions(), labels=targets))
+                loss_summary = tf.summary.scalar("loss", loss)
             with tf.name_scope("accuracy") as scope:
                 predictions = tf.to_int32(tf.argmax(self.predictions, 1))
                 correct_label = tf.to_int32(targets)
                 correct_predictions = tf.equal(predictions, correct_label)
                 accuracy = tf.reduce_mean(tf.cast(correct_predictions, "float"))
-                accuracy_summary = tf.scalar_summary("accuracy", accuracy)
+                accuracy_summary = tf.summary.scalar("accuracy", accuracy)
             return loss, loss_summary, accuracy, accuracy_summary

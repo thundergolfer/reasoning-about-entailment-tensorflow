@@ -12,7 +12,7 @@ class AttentionLSTMCell(LSTMCell):
         # warm-up
         self.warm_hiddens = hiddens
         self.L = len(self.warm_hiddens)
-        self.Y = tf.expand_dims(tf.transpose(tf.pack(self.warm_hiddens), [2, 1, 0]), 3)
+        self.Y = tf.expand_dims(tf.transpose(tf.stack(self.warm_hiddens), [2, 1, 0]), 3)
         self.c = [states[-1]]
 
         # weights
@@ -43,7 +43,7 @@ class AttentionLSTMCell(LSTMCell):
             second_term = tf.expand_dims(tf.transpose(tf.tile(tf.expand_dims(tf.matmul(self.w_h, self.h[-1]) + tf.matmul(self.w_r, self.r[-1]), [2]), [1, 1, self.L]), [1, 0, 2]), 3)
             M = tf.tanh(first_term + second_term)
             alpha = tf.expand_dims(tf.nn.softmax(tf.squeeze(tf.nn.conv2d(input=M, filter=self.w, strides=[1, 1, 1, 1], padding="VALID"), [1, 3])), 2)
-            r = tf.transpose(tf.squeeze(tf.batch_matmul(tf.squeeze(self.Y, [3]), alpha), [2]), [1, 0]) + tf.tanh(tf.matmul(self.w_t, self.r[-1]))
+            r = tf.transpose(tf.squeeze(tf.matmul(tf.squeeze(self.Y, [3]), alpha), [2]), [1, 0]) + tf.tanh(tf.matmul(self.w_t, self.r[-1]))
             self.r.append(r)
 
     @property
