@@ -69,9 +69,7 @@ Currently training is done by `cd implementation/ && python train.py`
 
 `coming soon`
 
-### Author
-
-Jonathon Belotti ([thundergolfer](https://github.com/thundergolfer)) - [@jonobelotti_IO](https://twitter.com/jonobelotti_IO) - [jonathonbelotti.com](http://jonathonbelotti.com)
+----------
 
 ### References
 
@@ -91,3 +89,7 @@ The work done in [borelien/entailment-neural-attention-lstm-tf](https://github.c
 ### License
 
 This project is available under the [MIT License](https://choosealicense.com/licenses/mit/)
+
+### Author
+
+Jonathon Belotti ([thundergolfer](https://github.com/thundergolfer)) - [@jonobelotti_IO](https://twitter.com/jonobelotti_IO) - [jonathonbelotti.com](http://jonathonbelotti.com)
