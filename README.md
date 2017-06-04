@@ -26,7 +26,9 @@ entailment dataset.
 
 ## Requirements
 
-`coming soon`
+* `tensorflow 1.0.0`
+* `gensim` (for loading word embeddings)
+* `numpy` and `pandas`
 
 ## Installation
 
@@ -57,9 +59,6 @@ Second is the [*Multi-Genre NLI Corpus*](https://www.nyu.edu/projects/bowman/mul
 ## Usage
 
 Currently training is done by `cd implementation/ && python train.py`
-
-`the rest coming soon`
-
 
 ## Results
 
