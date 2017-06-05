@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset_dir", default=os.path.join(data_directory, 'snli_1.0'),
-                                      help="path to the dataset directory (eg. SNLI dataset or MultiNLI dataset)")
+                        help="path to the dataset directory (eg. SNLI dataset or MultiNLI dataset)")
     parser.add_argument("--dataset_name", default='snli', help="Name of the dataset. One of: snli, multnli, sick")
     args = parser.parse_args()
 
@@ -172,9 +172,8 @@ if __name__ == '__main__':
         "weight_decay": 0.0,
         "keep_prob": 0.8,
         "batch_size": {"train": batch_parameters['batch_size_train'],
-    		   "dev": batch_parameters['batch_size_dev'],
-    	 	   "test": batch_parameters['batch_size_test']
-    		  },
+                       "dev": batch_parameters['batch_size_dev'],
+                       "test": batch_parameters['batch_size_test']},
         "gpu": 0,  # set to empty string to use CPU
         "num_epochs": 45,
         "embedding_dim": 300,

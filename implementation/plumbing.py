@@ -6,6 +6,7 @@ from gensim.models import KeyedVectors
 
 logger = logging.getLogger(__name__)
 
+
 def load_dataset(dataset_dir, dataset_name):
     print("Loading {} dataset".format(dataset_name))
     dataset = {}
@@ -23,7 +24,7 @@ def load_dataset(dataset_dir, dataset_name):
     elif dataset_name is 'sick':
         raise NotImplementedError
     else:
-        raise ArgumentError("{} is an unsupported dataset. Use on of: 'snli', 'multinli', 'sick'".format(dataset_name))
+        raise ValueError("{} is an unsupported dataset. Use on of: 'snli', 'multinli', 'sick'".format(dataset_name))
 
     return dataset
 
@@ -41,7 +42,7 @@ def dataset_preprocess(dataset, dataset_name):
         num_ids = len(dataset[split]["targets"])
 
         for i in range(num_ids):
-            premise, hypothesis  = dataset[split]["premises"][i][0], dataset[split]["hypothesis"][i][0]
+            premise, hypothesis = dataset[split]["premises"][i][0], dataset[split]["hypothesis"][i][0]
             target = dataset[split]["targets"][i][0]
 
             if type(premise) is not str or type(hypothesis) is not str:
