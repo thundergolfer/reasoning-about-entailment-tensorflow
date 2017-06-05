@@ -186,7 +186,7 @@ if __name__ == '__main__':
 
     # #### Load Dataset + Pre-trained Embeddings
 
-    dataset = dataset_preprocess(load_dataset(parameters['dataset_directory'], parameters['dataset_name']))
+    dataset = dataset_preprocess(load_dataset(parameters['dataset_directory'], parameters['dataset_name']), parameters['dataset_name'])
     embeddings = load_word_embeddings(parameters['embeddings_path'])
 
     train(embeddings, dataset, parameters)

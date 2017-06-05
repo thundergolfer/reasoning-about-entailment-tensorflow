@@ -6,17 +6,24 @@ from gensim.models import KeyedVectors
 
 logger = logging.getLogger(__name__)
 
-def load_dataset(dataset_dir):
-    print("Loading SNLI dataset")
+def load_dataset(dataset_dir, dataset_name):
+    print("Loading {} dataset".format(dataset_name))
     dataset = {}
-    for split in ['train', 'dev', 'test']:
-        split_path = os.path.join(dataset_dir, 'snli_1.0_{}.txt'.format(split))
-        df = pd.read_csv(split_path, delimiter='\t')
-        dataset[split] = {
-            "premises": df[["sentence1"]].values,
-            "hypothesis": df[["sentence2"]].values,
-            "targets": df[["gold_label"]].values
-        }
+    if dataset_name is 'snli':
+        for split in ['train', 'dev', 'test']:
+            split_path = os.path.join(dataset_dir, 'snli_1.0_{}.txt'.format(split))
+            df = pd.read_csv(split_path, delimiter='\t')
+            dataset[split] = {
+                "premises": df[["sentence1"]].values,
+                "hypothesis": df[["sentence2"]].values,
+                "targets": df[["gold_label"]].values
+            }
+    elif dataset_name is 'multinli':
+        raise NotImplementedError
+    elif dataset_name is 'sick':
+        raise NotImplementedError
+    else:
+        raise ArgumentError("{} is an unsupported dataset. Use on of: 'snli', 'multinli', 'sick'".format(dataset_name))
 
     return dataset
 
@@ -26,7 +33,7 @@ def load_word_embeddings(embeddings_dir):
     return KeyedVectors.load_word2vec_format(embeddings_dir, binary=True)
 
 
-def dataset_preprocess(dataset):
+def dataset_preprocess(dataset, dataset_name):
     logger.info("Tokenisation started...")
     preprocessed_ds = dict((split, {"premises": [], "hypothesis": [], "targets": []}) for split in dataset)
     for split in dataset:
@@ -35,17 +42,17 @@ def dataset_preprocess(dataset):
 
         for i in range(num_ids):
             premise, hypothesis  = dataset[split]["premises"][i][0], dataset[split]["hypothesis"][i][0]
-	    target = dataset[split]["targets"][i][0]
-		
-	    if type(premise) is not str or type(hypothesis) is not str:
-	        # some examples have "N/A" instead of entry, which gets mapped by pandas to 'nan'
-	        continue
-		
-	    if target not in map_targets:
-		# From the SNLI dataset README:
-	        # gold_label: This is the label chosen by the majority of annotators. Where no majority exists, this is '-', and the pair should
-		#  not be included when evaluating hard classification accuracy.
-	        continue
+            target = dataset[split]["targets"][i][0]
+
+            if type(premise) is not str or type(hypothesis) is not str:
+                # some examples have "N/A" instead of entry, which gets mapped by pandas to 'nan'
+                continue
+
+            if target not in map_targets:
+                # From the SNLI dataset README:
+                # gold_label: This is the label chosen by the majority of annotators. Where no majority exists, this is '-', and the pair should
+                #  not be included when evaluating hard classification accuracy.
+                continue
 
             premises_tokens = [word for word in sequence_to_clean_tokens(premise)]
             hypothesis_tokens = [word for word in sequence_to_clean_tokens(hypothesis)]
