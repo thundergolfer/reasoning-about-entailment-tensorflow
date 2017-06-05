@@ -1,3 +1,6 @@
+# Ignoring Binary Files
+*.bin
+*/*/*.bin
 
 # Ignoring work environment setup files
 install_app_in_numbats.sh
