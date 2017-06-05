@@ -1,53 +1,14 @@
 from __future__ import print_function
-import tensorflow as tf
-import numpy as np
-
-import sys
-import os
+import argparse
 import math
-from plumbing import load_dataset, load_word_embeddings, dataset_preprocess
+import numpy as np
+import os
+import sys
+import tensorflow as tf
 
+from plumbing import load_dataset, load_word_embeddings, dataset_preprocess
 from networks import TensorflowTrainable, RNN, LSTMCell, AttentionLSTMCell
 from batching import DataBatcher
-
-
-project_root = os.path.dirname(os.getcwd())
-
-parameters = {
-    "runs_dir": os.path.join(project_root, 'runs'),
-    "dataset_directory": os.path.join(project_root, 'snli_1.0'),
-    "embeddings_path": os.path.join(project_root, 'GNews-Vectors.bin'),
-    "model_name": "attention_lstm",
-}
-
-batch_parameters = {
-    "batch_size_train": 24,
-    "batch_size_dev": 10000,
-    "batch_size_test": 10000
-}
-
-training_parameters = {
-    "learning_rate": 0.001,
-    "weight_decay": 0.0,
-    "keep_prob": 0.8,
-    "batch_size": {"train": batch_parameters['batch_size_train'], 
-		   "dev": batch_parameters['batch_size_dev'],
-	 	   "test": batch_parameters['batch_size_test']
-		  },
-    "gpu": 0,  # set to empty string to use CPU
-    "num_epochs": 45,
-    "embedding_dim": 300,
-    "sequence_length": 20,
-    "num_units": 100  # LSTM output dimension (k in the original paper)
-}
-
-parameters.update(training_parameters)
-
-# #### Load Dataset + Pre-trained Embeddings
-
-
-dataset = dataset_preprocess(load_dataset(parameters['dataset_directory']))
-embeddings = load_word_embeddings(parameters['embeddings_path'])
 
 
 def setup_logging(model_dir):
@@ -183,4 +144,49 @@ def train(word_embeddings, dataset, parameters):
 
 
 if __name__ == '__main__':
+    project_root = os.path.dirname(os.getcwd())
+    data_directory = os.path.join(project_root, 'data')
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset_dir", default=os.path.join(data_directory, 'snli_1.0'),
+                                      help="path to the dataset directory (eg. SNLI dataset or MultiNLI dataset)")
+    parser.add_argument("--dataset_name", default='snli', help="Name of the dataset. One of: snli, multnli, sick")
+    args = parser.parse_args()
+
+    parameters = {
+        "runs_dir": os.path.join(project_root, 'runs'),
+        "dataset_directory": args.dataset_dir,
+        "dataset_name": args.dataset_name,
+        "embeddings_path": os.path.join(project_root, 'GNews-Vectors.bin'),
+        "model_name": "attention_lstm",
+    }
+
+    batch_parameters = {
+        "batch_size_train": 24,
+        "batch_size_dev": 10000,
+        "batch_size_test": 10000
+    }
+
+    training_parameters = {
+        "learning_rate": 0.001,
+        "weight_decay": 0.0,
+        "keep_prob": 0.8,
+        "batch_size": {"train": batch_parameters['batch_size_train'],
+    		   "dev": batch_parameters['batch_size_dev'],
+    	 	   "test": batch_parameters['batch_size_test']
+    		  },
+        "gpu": 0,  # set to empty string to use CPU
+        "num_epochs": 45,
+        "embedding_dim": 300,
+        "sequence_length": 20,
+        "num_units": 100  # LSTM output dimension (k in the original paper)
+    }
+
+    parameters.update(training_parameters)
+
+    # #### Load Dataset + Pre-trained Embeddings
+
+    dataset = dataset_preprocess(load_dataset(parameters['dataset_directory'], parameters['dataset_name']))
+    embeddings = load_word_embeddings(parameters['embeddings_path'])
+
     train(embeddings, dataset, parameters)
