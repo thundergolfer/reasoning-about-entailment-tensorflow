@@ -63,7 +63,11 @@ Currently training is done by `cd implementation/ && python train.py`
 
 ## Results
 
-`coming soon`
+> Note: These results do not acheive the accuracy results of the paper. Investigating improvements.
+
+![Model accuracy](http://i.imgur.com/wSsEA4r.png)
+![Model loss](http://i.imgur.com/Y3OhW8a.png)
+![Model performance summary](http://i.imgur.com/dKyefaj.png)
 
 ## Training Details
 
