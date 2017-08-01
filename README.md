@@ -92,7 +92,7 @@ The work done in [borelien/entailment-neural-attention-lstm-tf](https://github.c
 
 ### License
 
-This project is available under the [MIT License](https://choosealicense.com/licenses/mit/)
+This project is available under the [MIT License](https://choosealicense.com/licenses/mit/).
 
 ### Author
 
